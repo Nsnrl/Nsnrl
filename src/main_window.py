@@ -46,12 +46,11 @@ class cMainWindow:
         title = f"Heilmann Software"
         self.window.title(title)   
         
-        # self.window.iconbitmap("res/arck_icon.ico")
+        self.window.iconbitmap("res/convertir.ico")
         
         self.window.grid_rowconfigure(0, weight=0)
         self.window.grid_rowconfigure(1, weight=1)
         self.window.grid_columnconfigure(0, weight=1)
-    
     
     def __init_widget(self):
         self.frame_button = tk.LabelFrame(self.window, text="")
