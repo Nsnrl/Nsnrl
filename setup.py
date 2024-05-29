@@ -1,6 +1,6 @@
 import cx_Freeze
 executables = [cx_Freeze.Executable("main.py",
-                                    # icon=r"res\arck_icon.ico",
+                                    icon=r"res\convertir.ico",
                                     base="Win32GUI")]
 
 cx_Freeze.setup(

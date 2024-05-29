@@ -11,7 +11,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{70D13B55-20F9-4CBC-AF8F-EB8D3C31EFE8}
+AppId={{20E19208-AD34-4F55-88DD-D615B2CB26F3}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -22,6 +22,7 @@ DisableProgramGroupPage=yes
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\s.dufourg\Desktop\installeur\Heilmann_Software\installeur
 OutputBaseFilename=Heilmann_Software_installeur
+;SetupIconFile=C:\Users\s.dufourg\Desktop\installeur\Heilmann_Software\build\exe.win-amd64-3.11\res\convertir.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
