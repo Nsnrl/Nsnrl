@@ -7,6 +7,8 @@ import threading
 import tkinter as tk
 from tkinter import filedialog
 
+from PIL import Image, ImageTk
+
 from src.utils import*
 from src.loader import c_loader
 from src.scroll_frame import cFrame_Scroll
@@ -22,6 +24,7 @@ class cMainWindow:
         self.__create_window()
         self.__init_widget()
         
+        self.__connect_button()
         self.__config_widget()
         
         self.__set_position()
@@ -57,7 +60,7 @@ class cMainWindow:
         
         #FRAME BUTTON
         self.frame_button_load_folder = tk.Frame(self.frame_button)
-        self.button_load_folder = tk.Button(self.frame_button_load_folder, text="Load Folder", command=self.__on_click_load_folder)
+        self.button_load_folder = tk.Button(self.frame_button_load_folder, text="Load Folder")
         
         self.frame_label_number_file = tk.Frame(self.frame_button)
         self.label_number_file = tk.Label(self.frame_label_number_file, text="Number of Files: ")
@@ -66,7 +69,7 @@ class cMainWindow:
         self.label_number_error = tk.Label(self.frame_label_number_error, text="Number of Errors: ")
 
         self.frame_button_generate_csv = tk.Frame(self.frame_button)
-        self.button_generate_csv = tk.Button(self.frame_button_generate_csv, text="Generate CSV",command=self.__on_click_generate_csv)
+        self.button_generate_csv = tk.Button(self.frame_button_generate_csv, text="Generate CSV")
         
         #FRAME BUTTON
         self.c_frame_scroll = cFrame_Scroll(self.frame_body)
@@ -76,9 +79,25 @@ class cMainWindow:
         c_loader.set_parent(self.frame_loading)
 
 
+    def __connect_button(self):
+        self.button_load_folder.config(command=self.__on_click_load_folder)
+        self.button_generate_csv.config(command=self.__on_click_generate_csv)
+        
     def __config_widget(self):
-        #---------------------------------- Connect function
+        #--------------------------------------- Connect function
         c_loader.function_update_body = self.__add_status
+        
+        #--------------------------------------- Set Image Button
+        self.__set_button_load_folder_image()
+        self.__set_button_generate_csv_image()
+        
+        #---------------------------------------
+        self.button_load_folder.bind("<Enter>", self.__on_button_enter)
+        self.button_load_folder.bind("<Leave>", self.__on_button_leave)
+
+        self.button_generate_csv.bind("<Enter>", self.__on_button_enter)
+        self.button_generate_csv.bind("<Leave>", self.__on_button_leave)
+
 
     def __set_position(self):
         self.window.grid_columnconfigure(0, weight=1)
@@ -119,7 +138,39 @@ class cMainWindow:
         #LOADER
         c_loader.frame.pack(expand=True, fill=tk.BOTH)
         
+     
+     # BUTTON
+    
+    
+    #--set image--
+    def __set_button_load_folder_image(self):
+        image_path = r"res/load_folder.png"
+
+        original_image = Image.open(image_path)
+        image = original_image.resize(size=(40,40))
+        self.image_button_load_folder = ImageTk.PhotoImage(image)
         
+        self.button_load_folder.config(image=self.image_button_load_folder, compound=tk.TOP)
+    
+    def __set_button_generate_csv_image(self):
+        image_path = r"res/csv.png"
+
+        original_image = Image.open(image_path)
+        image = original_image.resize(size=(40,40))
+        self.image_button_generate_csv = ImageTk.PhotoImage(image)
+        
+        self.button_generate_csv.config(image=self.image_button_generate_csv, compound=tk.TOP)
+      
+       
+    # --on enter/leave--
+    def __on_button_enter(self, event):
+        event.widget.config(bg="darkgrey", cursor="hand2")
+
+    def __on_button_leave(self, event):
+        event.widget.config(bg="SystemButtonFace", cursor="")
+        
+        
+    # --on click--
     def __on_click_load_folder(self):
         folder_path = filedialog.askdirectory()
         if(not folder_path):
@@ -140,7 +191,6 @@ class cMainWindow:
 
         c_loader.stop()
         
-    
     def __on_click_generate_csv(self):
         output_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("csv files", "*.csv")])
         if(not output_path):
@@ -200,6 +250,8 @@ class cMainWindow:
         c_loader.stop()
         
         
+        
+    #BODY
     def __fill_body(self, list_path):
         self.c_frame_scroll = cFrame_Scroll(self.frame_body)
         for path in list_path:
