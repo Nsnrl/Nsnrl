@@ -114,6 +114,8 @@ class cPersonne_morale:
                 row.append(self.section_parcelle)
             elif(value == "Parcelle"):
                 row.append(self.parcelle)
+            elif(value == "Nom/Prenom"):
+                row.append(self.raison_sociale)
             elif(value == "Adresse"):
                 row.append(self.adresse_titulaire_droit)
             elif(value == "Commune"):
@@ -288,7 +290,29 @@ def get_type_personne(text):
     else:
         print(f"Error <get_type_personne> personne unknown")
         return None
-    
+   
+def format_adresse(adresse):
+    list_word = adresse.split(" ")
+    list_number = {}
+    for i in range(len(list_word)):
+        word = list_word[i]
+        if(not word.isdigit()):
+            continue
+        
+        number = int(word)
+        if((number > 10000) and (number < 100000)):
+            list_number[number] = i
+            
+            
+            
+    # list_number = re.findall(r'\d+', adresse)
+    # for number in list_number:
+    #     number = int(number)
+    #     if((number > 10000) and (number < 100000)):
+    #         print(number)
+            
+    print(adresse) 
+    print()
 
     
 # -------------- On class -------------- 
@@ -433,9 +457,8 @@ def create_personne_morale(file_path, bounding_box, number_personne):
     
     # rows
     for i in range(1, number_row, 1):
-        # indice_raison_sociale = (number_column*i)
-        # text_raison_sociale = get_text(file_path, bounding_box, indice_raison_sociale)
-        text_raison_sociale = "UNUSED"
+        indice_raison_sociale = (number_column*i)
+        text_raison_sociale = get_text(file_path, bounding_box, indice_raison_sociale)
         
         # indice_numero_siren = 1 + (number_column*i)
         # text_numero_siren = get_text(file_path, bounding_box, indice_numero_siren)
@@ -451,6 +474,8 @@ def create_personne_morale(file_path, bounding_box, number_personne):
         
         indice_adresse_titulaire_droit = 4 + (number_column*i)
         text_adresse_titulaire_droit = get_text(file_path, bounding_box, indice_adresse_titulaire_droit)
+        
+        format_adresse(text_adresse_titulaire_droit)
         
         # indice_id_foncier = 5 + (number_column*i)
         # text_id_foncier = get_text(file_path, bounding_box, indice_id_foncier)
@@ -511,6 +536,7 @@ def create_personne_physique(file_path, bounding_box, number_personne):
         
         indice_adresse_titulaire_droit = 6 + (number_column*i)
         text_adresse_titulaire_droit = get_text(file_path, bounding_box, indice_adresse_titulaire_droit)
+        format_adresse(text_adresse_titulaire_droit)
         
         # indice_id_foncier = 7 + (number_column*i)
         # text_id_foncier = get_text(file_path, bounding_box, indice_id_foncier)
