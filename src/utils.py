@@ -30,7 +30,7 @@ GLB_COLUMN_PERSONNE_MORALE = ["Raison sociale", "Numéro SIREN", "Sigle", "Droit
 # CLASS
 #################################################################
 class cPersonne_physique:
-    def __init__(self, nom_prenom, sexe, data_naissance, lieu_naissance, nom_prenom_usage, droit, adresse_titulaire_droit, id_foncier):
+    def __init__(self, nom_prenom, sexe, data_naissance, lieu_naissance, nom_prenom_usage, droit, adresse_titulaire_droit, adresse_fonciere, post_code, id_foncier):
         self.section_parcelle = ""
         self.parcelle = ""
         self.city = ""
@@ -42,6 +42,8 @@ class cPersonne_physique:
         self.nom_prenom_usage = nom_prenom_usage  
         self.droit = droit  
         self.adresse_titulaire_droit = adresse_titulaire_droit  
+        self.adresse_fonciere = adresse_fonciere
+        self.post_code = post_code
         self.id_foncier = id_foncier         
      
     def set_section_parcelle(self, section_parcelle):
@@ -62,8 +64,10 @@ class cPersonne_physique:
                 row.append(self.parcelle)
             elif(value == "Nom/Prenom"):
                 row.append(self.nom_prenom_usage)
-            elif(value == "Adresse"):
-                row.append(self.adresse_titulaire_droit)
+            elif(value == "Adresse Fonciere"):
+                row.append(self.adresse_fonciere)
+            elif(value == "Code Postale"):
+                row.append(self.post_code)
             elif(value == "Commune"):
                 row.append(self.city)
             else:
@@ -86,7 +90,7 @@ class cPersonne_physique:
         print(f"id_foncier: {self.id_foncier}")
               
 class cPersonne_morale:
-    def __init__(self, raison_sociale, numero_siren, sigle, droit, adresse_titulaire_droit, id_foncier):
+    def __init__(self, raison_sociale, numero_siren, sigle, droit, adresse_titulaire_droit, adresse_fonciere, post_code, id_foncier):
         self.section_parcelle = ""
         self.parcelle = ""
         self.city = ""
@@ -96,6 +100,8 @@ class cPersonne_morale:
         self.sigle = sigle  
         self.droit = droit  
         self.adresse_titulaire_droit = adresse_titulaire_droit  
+        self.adresse_fonciere = adresse_fonciere
+        self.post_code = post_code
         self.id_foncier = id_foncier 
     
     def set_section_parcelle(self, section_parcelle):
@@ -116,8 +122,10 @@ class cPersonne_morale:
                 row.append(self.parcelle)
             elif(value == "Nom/Prenom"):
                 row.append(self.raison_sociale)
-            elif(value == "Adresse"):
-                row.append(self.adresse_titulaire_droit)
+            elif(value == "Adresse Fonciere"):
+                row.append(self.adresse_fonciere)
+            elif(value == "Code Postale"):
+                row.append(self.post_code)
             elif(value == "Commune"):
                 row.append(self.city)
             else:
@@ -237,7 +245,12 @@ def get_city(text):
     
     city = text[index_start+1: index_stop]
     city_formated = get_text_formated(city)
-
+    
+    list_word = city_formated.split(";")
+    if(len(list_word) != 2):
+        return city_formated
+        
+    city_formated = list_word[-1] 
     return city_formated
 
 def get_number_personne(text, indice):
@@ -291,9 +304,9 @@ def get_type_personne(text):
         print(f"Error <get_type_personne> personne unknown")
         return None
    
-def format_adresse(adresse):
-    list_word = adresse.split(" ")
-    list_number = {}
+def format_adresse(text_adresse_titulaire_droit):
+    list_word = text_adresse_titulaire_droit.split(" ")
+    list_number = []
     for i in range(len(list_word)):
         word = list_word[i]
         if(not word.isdigit()):
@@ -301,18 +314,25 @@ def format_adresse(adresse):
         
         number = int(word)
         if((number > 10000) and (number < 100000)):
-            list_number[number] = i
+            list_number.append(word)
             
-            
-            
-    # list_number = re.findall(r'\d+', adresse)
-    # for number in list_number:
-    #     number = int(number)
-    #     if((number > 10000) and (number < 100000)):
-    #         print(number)
-            
-    print(adresse) 
-    print()
+
+    if(len(list_number) != 1):
+        return text_adresse_titulaire_droit, text_adresse_titulaire_droit
+    
+    index = list_word.index(list_number[0])
+    
+    adresse_fonciere = list_word[:index]
+    post_code = list_word[index:]
+
+    adresse_fonciere = " ".join(adresse_fonciere)
+    post_code = " ".join(post_code)
+      
+    return  adresse_fonciere, post_code
+    # print(f"text_adresse_titulaire_droit: {text_adresse_titulaire_droit}") 
+    # print(f"adresse_fonciere: {adresse_fonciere}")
+    # print(f"post_code: {post_code}")
+    # print("------------------------")
 
     
 # -------------- On class -------------- 
@@ -475,13 +495,13 @@ def create_personne_morale(file_path, bounding_box, number_personne):
         indice_adresse_titulaire_droit = 4 + (number_column*i)
         text_adresse_titulaire_droit = get_text(file_path, bounding_box, indice_adresse_titulaire_droit)
         
-        format_adresse(text_adresse_titulaire_droit)
+        adresse_fonciere, post_code = format_adresse(text_adresse_titulaire_droit)
         
         # indice_id_foncier = 5 + (number_column*i)
         # text_id_foncier = get_text(file_path, bounding_box, indice_id_foncier)
         text_id_foncier = "UNUSED"
         
-        c_personne_morale = cPersonne_morale(text_raison_sociale, text_numero_siren, text_sigle, text_droit, text_adresse_titulaire_droit, text_id_foncier)
+        c_personne_morale = cPersonne_morale(text_raison_sociale, text_numero_siren, text_sigle, text_droit, text_adresse_titulaire_droit, adresse_fonciere, post_code, text_id_foncier)
         # c_personne_morale.toString()
         list_personne_morale.append(c_personne_morale)
         
@@ -536,13 +556,13 @@ def create_personne_physique(file_path, bounding_box, number_personne):
         
         indice_adresse_titulaire_droit = 6 + (number_column*i)
         text_adresse_titulaire_droit = get_text(file_path, bounding_box, indice_adresse_titulaire_droit)
-        format_adresse(text_adresse_titulaire_droit)
+        adresse_fonciere, post_code = format_adresse(text_adresse_titulaire_droit)
         
         # indice_id_foncier = 7 + (number_column*i)
         # text_id_foncier = get_text(file_path, bounding_box, indice_id_foncier)
         text_id_foncier = "UNUSED"
         
-        c_personne_physique = cPersonne_physique(text_nom_prenom, text_sexe, text_date_naissance, text_lieu_naissance, text_nom_prenom_usage, text_droit, text_adresse_titulaire_droit, text_id_foncier)
+        c_personne_physique = cPersonne_physique(text_nom_prenom, text_sexe, text_date_naissance, text_lieu_naissance, text_nom_prenom_usage, text_droit, text_adresse_titulaire_droit, adresse_fonciere, post_code, text_id_foncier)
         # c_personne_physique.toString()
         list_personne_physique.append(c_personne_physique)
         
