@@ -34,7 +34,7 @@ class cMainWindow:
         self.list_path = []
         self.list_status = []
 
-        self.header = ["Zonage", "Section Parcelle", "Parcelle", "Num-Voie", "Adresse Fonciere", "Superficie", "civilite", "Nom/Prenom", "Code Postale", "Commune", "Date | Courrier | Num"]
+        self.header = ["Zonage", "Section Parcelle", "Parcelle", "Num-Voie", "Adresse Foncier", "Superficie", "civilite", "Nom/Prenom", "Adresse Proprio", "Code Postale", "Commune", "Date | Courrier | Num"]
         
                        
     def __create_window(self):

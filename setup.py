@@ -5,7 +5,7 @@ executables = [cx_Freeze.Executable("main.py",
 
 cx_Freeze.setup(
     name = "Heilmann_Software",
-    version = "0.1",
+    version = "0.2",
     options={
         "build_exe": {
             "include_files": ["res/"],

@@ -64,7 +64,7 @@ class cPersonne_physique:
                 row.append(self.parcelle)
             elif(value == "Nom/Prenom"):
                 row.append(self.nom_prenom_usage)
-            elif(value == "Adresse Fonciere"):
+            elif(value == "Adresse Proprio"):
                 row.append(self.adresse_fonciere)
             elif(value == "Code Postale"):
                 row.append(self.post_code)
@@ -122,7 +122,7 @@ class cPersonne_morale:
                 row.append(self.parcelle)
             elif(value == "Nom/Prenom"):
                 row.append(self.raison_sociale)
-            elif(value == "Adresse Fonciere"):
+            elif(value == "Adresse Proprio"):
                 row.append(self.adresse_fonciere)
             elif(value == "Code Postale"):
                 row.append(self.post_code)
