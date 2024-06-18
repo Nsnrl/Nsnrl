@@ -239,12 +239,10 @@ class cMainWindow:
             row = personne.get_csv_row(self.header)
             data_csv.append(row)
             
-        # sort data    
-        sorted_data = sorted(data_csv[1:], key=lambda x: (x[1], int(x[2])))
-        sorted_data.insert(0, data_csv[0])
+        formated_data = format_data_csv(data_csv)        
 
         #create csv
-        create_csv(output_path, sorted_data)
+        create_csv(output_path, formated_data)
         
         c_loader.stop()
         
@@ -286,3 +284,4 @@ class cMainWindow:
         self.list_status.append(status)
         self.__update_body()
         
+    # FUNCTION

@@ -355,6 +355,51 @@ def create_csv(path, data):
             writer.writerow(row)
     
 
+# -------------- On csv data--------------
+def format_data_csv(data):
+    dict_data = {}
+    for i in range(len(data)):
+        if(i == 0 ):
+            continue
+        
+        row = data[i]
+        
+        section_parcelle = row[1]
+        name = row[7]
+        code = row[9]
+        
+        key = (section_parcelle, name, code)
+        if(key in dict_data):
+            dict_data[key].append(i)
+        else:
+            dict_data[key] = [i]
+        
+    new_data = []
+    new_data.append(data[0])
+    
+    for key in dict_data:
+        array_indice = dict_data[key]
+        
+        size_array = len(array_indice)
+        parcelle = ""
+        
+        for i in range(size_array):
+            indice = array_indice[i]
+            row = data[indice]
+            
+            if(i < (size_array-1)):
+                parcelle += row[2]  + ", "
+            else:
+                parcelle += row[2]
+            
+        row[2] = parcelle
+        new_data.append(row)
+    
+    sorted_data = sorted(new_data[1:], key=lambda x: (x[1], x[2]))
+    sorted_data.insert(0, new_data[0])
+    
+    return sorted_data
+
 # -------------- Main function --------------
 def get_list_information(list_path):
     list_personne_morale = []
