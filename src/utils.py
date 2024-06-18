@@ -357,6 +357,59 @@ def create_csv(path, data):
 
 # -------------- On csv data--------------
 def format_data_csv(data):
+    data_grouped_by_parcelle = group_data_by_parcelle(data)
+    data_grouped_by_name = group_data_by_name(data_grouped_by_parcelle)
+    
+    
+    sorted_data = sorted(data_grouped_by_name[1:], key=lambda x: (x[1], x[2]))
+    sorted_data.insert(0, data_grouped_by_name[0])
+    
+    return sorted_data
+
+
+def group_data_by_name(data):
+    dict_data = {}
+    for i in range(len(data)):
+        if(i == 0 ):
+            continue
+        
+        row = data[i]
+        
+        section_parcelle = row[1]
+        parcelle = row[2]
+        code = row[9]
+        
+        key = (section_parcelle, parcelle, code)
+        if(key in dict_data):
+            dict_data[key].append(i)
+        else:
+            dict_data[key] = [i]
+        
+    new_data = []
+    new_data.append(data[0])
+    
+    for key in dict_data:
+        array_indice = dict_data[key]
+        
+        size_array = len(array_indice)
+        name = ""
+        
+        for i in range(size_array):
+            indice = array_indice[i]
+            row = data[indice]
+            
+            if(i < (size_array-1)):
+                name += row[7]  + ", "
+            else:
+                name += row[7]
+            
+        row[7] = name
+        new_data.append(row)
+        
+    return new_data
+  
+
+def group_data_by_parcelle(data):
     dict_data = {}
     for i in range(len(data)):
         if(i == 0 ):
@@ -394,11 +447,9 @@ def format_data_csv(data):
             
         row[2] = parcelle
         new_data.append(row)
+        
+    return new_data
     
-    sorted_data = sorted(new_data[1:], key=lambda x: (x[1], x[2]))
-    sorted_data.insert(0, new_data[0])
-    
-    return sorted_data
 
 # -------------- Main function --------------
 def get_list_information(list_path):
