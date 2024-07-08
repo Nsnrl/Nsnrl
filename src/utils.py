@@ -225,7 +225,7 @@ def rename_files(folder_path, list_path):
     new_list_path = []
     for i in range(len(list_path)):
         old_name = list_path[i]
-        new_name = f"img_{i+1}.png"
+        new_name = "img_{:04d}.png".format(i+1)
         new_path = os.path.join(folder_path, new_name)
         if(not os.path.exists(new_path)):
             os.rename(old_name, new_path)
@@ -254,6 +254,9 @@ def get_city(text):
     return city_formated
 
 def get_number_personne(text, indice):
+    if(indice == None):
+        return 0
+    
     number_personne = text[indice+2]
     if(not number_personne.isdigit()):
         print(f"Error <get_number_personne> number invalid")
@@ -302,7 +305,7 @@ def get_type_personne(text):
         return (match_moral.end(), 1)
     else:
         print(f"Error <get_type_personne> personne unknown")
-        return None
+        return None, None
    
 def format_adresse(text_adresse_titulaire_droit):
     list_word = text_adresse_titulaire_droit.split(" ")
@@ -466,6 +469,10 @@ def get_list_information(list_path):
         status = 0
         file_path = list_path[i]
         
+        if(not os.path.exists(file_path)):
+            list_error_personne_morale.append(file_path)
+            continue
+        
         image = Image.open(file_path)
         text = pytesseract.image_to_string(image)
         
@@ -479,9 +486,9 @@ def get_list_information(list_path):
         if(city == ""):
             list_error_city.append(file_path)
         
-        #get the type of personne
+        #get the type of personne  
         type_personne = get_type_personne(text)
-        if(type_personne == None):
+        if(type_personne == (None, None)):
             print(f"<Error> type unknow in {file_path}")
             
         index, personne_type = type_personne
@@ -522,7 +529,11 @@ def get_list_information(list_path):
             else:
                 list_personne_physique += temp_list_personne_physique  
                 status = 1
-                
+         
+        elif(personne_type == None):
+            list_error_personne_morale.append(file_path)
+            status = 2
+                   
         percent = (i*100)/len(list_path)
         c_loader.step(percent, status)
                 

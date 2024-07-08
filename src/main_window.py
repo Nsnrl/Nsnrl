@@ -179,7 +179,9 @@ class cMainWindow:
         
         # Format path
         list_path = get_list_path(folder_path)
-        self.list_path = rename_files(folder_path, list_path)
+        rename_files(folder_path, list_path)
+        self.list_path = get_list_path(folder_path)
+        
         
         # update label
         self.label_number_file.config(text=f"Number of Files: {len(list_path)}")
@@ -188,7 +190,7 @@ class cMainWindow:
         self.__fill_body(self.list_path)
         
 
-        c_loader.stop()
+        # c_loader.stop()
         
     def __on_click_generate_csv(self):
         output_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("csv files", "*.csv")])
