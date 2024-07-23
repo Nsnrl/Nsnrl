@@ -274,8 +274,19 @@ def get_parcelle(text):
         if(len(text) < (indice_start+7)):
             return "", ""
         
-        section_parcelle = text[indice_start: indice_start+2]
-        parcelle = text[indice_start+3: indice_start+7]
+        sub_text = text[indice_start: indice_start+7]
+        print(sub_text)
+        
+        sub_text_splitted = sub_text.split(" ")
+        if(len(sub_text_splitted) < 2):
+            return "", ""
+        
+        section_parcelle = sub_text_splitted[0]
+        parcelle = sub_text_splitted[1]
+                
+        # print(section_parcelle)
+        # print(parcelle)
+        # print()
         
         return section_parcelle, parcelle  
    
