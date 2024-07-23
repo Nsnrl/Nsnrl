@@ -43,7 +43,7 @@ class cMainWindow:
         self.window.geometry("1200x800")
         # self.window.state('zoomed')
          
-        title = f"Heilmann Software"
+        title = f"Heilmann Software - 0.3"
         self.window.title(title)   
         
         self.window.iconbitmap("res/convertir.ico")
